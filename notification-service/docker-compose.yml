@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount data directory to persist database
+      - ./data:/app/data
+      # Optional: mount logs directory  
+      - ./logs:/app/logs
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - notification-network
+
+networks:
+  notification-network:
+    driver: bridge 
