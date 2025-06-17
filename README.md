@@ -25,6 +25,11 @@ The application follows a microservices architecture with the following services
 - WebSocket
 - JWT
 - Docker
+- Node.js 18
+- Express.js 5.1
+- Cloudinary
+- Firebase
+- SQLite
 
 ### Frontend
 - React 18
@@ -46,7 +51,7 @@ The application follows a microservices architecture with the following services
 
 ```
 .
-├── authenticate/              # Authentication Service
+├── authenticate-service/      # Authentication Service
 ├── todotask-service/         # Todo Task Service
 ├── image-service/           # Image Service
 ├── notification-service/    # Notification Service
@@ -59,12 +64,13 @@ The application follows a microservices architecture with the following services
 
 - 👤 User authentication and authorization
 - 📝 Todo task management (CRUD operations)
-- 🔔 Real-time notifications
-- 🖼️ Profile image upload
+- 🖼️ Image management (upload, retrieve, delete images for notes and users using Cloudinary and Firebase)
+- 🔔 Internal notification service (CRUD notifications, user-based, priority levels, read/unread status, real-time via WebSocket)
 - 📱 Responsive design
 - 🔒 JWT-based security
 - 🌐 RESTful APIs
 - 📊 PostgreSQL database
+- 🗄️ SQLite database for notification service (simple, no setup required)
 - 🐳 Docker containerization
 
 ## Getting Started
