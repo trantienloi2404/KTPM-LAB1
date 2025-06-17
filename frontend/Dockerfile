@@ -6,11 +6,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies with legacy peer deps
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
+
+# Set NODE_OPTIONS for increased memory
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # Build the application
 RUN npm run build

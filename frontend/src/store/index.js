@@ -9,4 +9,6 @@ export const store = configureStore({
     todo: todoReducer,
     notification: notificationReducer,
   },
-}); 
+});
+
+export default store; 
