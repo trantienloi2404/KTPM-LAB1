@@ -40,11 +40,11 @@ RUN mkdir -p /app/data && chown -R nestjs:nodejs /app
 USER nestjs
 
 # Expose port
-EXPOSE 3000
+EXPOSE 8083
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/api || exit 1
+  CMD curl -f http://localhost:8083/api || exit 1
 
 # Start the application
 CMD ["node", "dist/main"] 
