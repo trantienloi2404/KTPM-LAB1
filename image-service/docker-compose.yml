@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  image-service:
+    build: .
+    ports:
+      - "8084:8084"
+    environment:
+      - PORT=8084
+      - NODE_ENV=development
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - FIREBASE_DATABASE_URL=${FIREBASE_DATABASE_URL}
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    restart: unless-stopped
