@@ -8,9 +8,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.logging.Logger;
+
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"}, allowCredentials = "true")
 public class AuthController {
+    private static final Logger logger = Logger.getLogger(AuthController.class.getName());
 
     private final AuthService service;
 
@@ -22,6 +26,8 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> register(
             @RequestBody AuthRequestDTO request,
             HttpServletResponse response) {
+        logger.info("Register request received for username: " + request.getUsername());
+        
         ApiResponse<String> apiResponse = service.register(request);
         if (apiResponse.getData() != null) {
             setAuthCookie(response, apiResponse.getData());
@@ -33,6 +39,8 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> login(
             @RequestBody AuthRequestDTO request,
             HttpServletResponse response) {
+        logger.info("Login request received for username: " + request.getUsername());
+        
         ApiResponse<String> apiResponse = service.login(request);
         if (apiResponse.getData() != null) {
             setAuthCookie(response, apiResponse.getData());
@@ -54,7 +62,7 @@ public class AuthController {
         Cookie cookie = new Cookie("auth_token", token);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true); // Only send cookie over HTTPS
+        cookie.setSecure(false); // Set to false for non-HTTPS local development
         cookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
         response.addCookie(cookie);
     }
