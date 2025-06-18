@@ -89,7 +89,7 @@ function TodoList() {
 
       <Paper>
         <List>
-          {todos.map((todo) => (
+          {Array.isArray(todos) && todos.length > 0 ? todos.map((todo) => (
             <ListItem
               key={todo.id}
               divider
@@ -126,7 +126,11 @@ function TodoList() {
                 }}
               />
             </ListItem>
-          ))}
+          )) : (
+            <ListItem>
+              <ListItemText primary="No todos found. Add some todos to get started!" />
+            </ListItem>
+          )}
         </List>
       </Paper>
 

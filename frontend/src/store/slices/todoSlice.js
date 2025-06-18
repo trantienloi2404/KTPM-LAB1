@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = '/api/todo';
+const API_URL = '/api/todos';
 
 // Add axios interceptor for authentication
 axios.interceptors.request.use((config) => {
@@ -82,7 +82,8 @@ const todoSlice = createSlice({
       })
       .addCase(fetchTodos.fulfilled, (state, action) => {
         state.loading = false;
-        state.todos = action.payload;
+        // Handle API response format - extract data from response wrapper
+        state.todos = action.payload?.data || action.payload || [];
       })
       .addCase(fetchTodos.rejected, (state, action) => {
         state.loading = false;
@@ -94,7 +95,10 @@ const todoSlice = createSlice({
       })
       .addCase(addTodo.fulfilled, (state, action) => {
         state.loading = false;
-        state.todos.push(action.payload);
+        const newTodo = action.payload?.data || action.payload;
+        if (newTodo) {
+          state.todos.push(newTodo);
+        }
       })
       .addCase(addTodo.rejected, (state, action) => {
         state.loading = false;
@@ -106,9 +110,12 @@ const todoSlice = createSlice({
       })
       .addCase(updateTodo.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.todos.findIndex((todo) => todo.id === action.payload.id);
-        if (index !== -1) {
-          state.todos[index] = action.payload;
+        const updatedTodo = action.payload?.data || action.payload;
+        if (updatedTodo) {
+          const index = state.todos.findIndex((todo) => todo.id === updatedTodo.id);
+          if (index !== -1) {
+            state.todos[index] = updatedTodo;
+          }
         }
       })
       .addCase(updateTodo.rejected, (state, action) => {

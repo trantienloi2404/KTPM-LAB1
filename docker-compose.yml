@@ -104,11 +104,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8081/api/auth/logout"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
     restart: unless-stopped
     networks:
       - microservices-network
@@ -128,11 +128,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8082/api/todos?userId=1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
     restart: unless-stopped
     networks:
       - microservices-network
@@ -208,8 +208,7 @@ services:
     ports:
       - "3001:80"
     environment:
-      - REACT_APP_API_URL=http://localhost:8080
-      - REACT_APP_WS_URL=ws://localhost:8080
+      # No REACT_APP_API_URL - use nginx proxy (same origin)
       - REACT_APP_CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
       - REACT_APP_CLOUDINARY_UPLOAD_PRESET=${CLOUDINARY_UPLOAD_PRESET}
       - REACT_APP_FIREBASE_API_KEY=${FIREBASE_API_KEY}
@@ -218,15 +217,9 @@ services:
       - REACT_APP_FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
       - REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}
       - REACT_APP_FIREBASE_APP_ID=${FIREBASE_APP_ID}
-    # depends_on:
-    #   authenticate-service:
-    #     condition: service_healthy
-    #   todotask-service:
-    #     condition: service_healthy
-    #   notification-service:
-    #     condition: service_healthy
-    #   image-service:
-    #     condition: service_healthy
+    depends_on:
+      - authenticate-service
+      - todotask-service
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
       interval: 30s
