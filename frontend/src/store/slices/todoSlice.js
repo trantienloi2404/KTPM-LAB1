@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const API_URL = '/api/todos';
+const DEFAULT_USER_ID = 1; // Set default userId to 1
 
 // Add axios interceptor for authentication
 axios.interceptors.request.use((config) => {
@@ -16,10 +17,11 @@ export const fetchTodos = createAsyncThunk(
   'todo/fetchTodos',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}`);
+      // Add userId as a query parameter
+      const response = await axios.get(`${API_URL}?userId=${DEFAULT_USER_ID}`);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Error fetching todos');
     }
   }
 );
@@ -28,10 +30,17 @@ export const addTodo = createAsyncThunk(
   'todo/addTodo',
   async (todo, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}`, todo);
+      // Add userId and current time to the todo
+      const todoWithMetadata = {
+        ...todo,
+        userId: DEFAULT_USER_ID,
+        time: todo.time || '2025-06-18T08:39:56', // Use provided time or current time
+        isDone: false // Initialize as not done
+      };
+      const response = await axios.post(`${API_URL}`, todoWithMetadata);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Error adding todo');
     }
   }
 );
@@ -40,10 +49,15 @@ export const updateTodo = createAsyncThunk(
   'todo/updateTodo',
   async (todo, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${API_URL}/${todo.id}`, todo);
+      // Ensure userId is set
+      const todoWithUserId = {
+        ...todo,
+        userId: todo.userId || DEFAULT_USER_ID
+      };
+      const response = await axios.put(`${API_URL}/${todo.id}`, todoWithUserId);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Error updating todo');
     }
   }
 );
@@ -55,7 +69,7 @@ export const deleteTodo = createAsyncThunk(
       await axios.delete(`${API_URL}/${id}`);
       return id;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Error deleting todo');
     }
   }
 );
@@ -138,4 +152,4 @@ const todoSlice = createSlice({
 });
 
 export const { clearError } = todoSlice.actions;
-export default todoSlice.reducer; 
+export default todoSlice.reducer;

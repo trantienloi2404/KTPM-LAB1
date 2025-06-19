@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 
 @Configuration
 @EnableCaching
@@ -17,15 +17,15 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         
-        // Sử dụng StringRedisSerializer cho key
+        // Use StringRedisSerializer for keys
         template.setKeySerializer(new StringRedisSerializer());
-        // Sử dụng GenericJackson2JsonRedisSerializer cho value
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        // Use JDK serialization for values instead of JSON
+        template.setValueSerializer(new JdkSerializationRedisSerializer());
         
         template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setHashValueSerializer(new JdkSerializationRedisSerializer());
         
         template.afterPropertiesSet();
         return template;
     }
-} 
+}

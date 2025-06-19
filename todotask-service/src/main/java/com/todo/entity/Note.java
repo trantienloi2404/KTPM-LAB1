@@ -2,21 +2,24 @@ package com.todo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "notes")
-public class Note {
+public class Note implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
-    
+
     @Column(length = 1000)
     private String description;
-    
+
     private LocalDateTime date;
-    
+
     private Long userId;
 
     // Getters and Setters
@@ -34,4 +37,4 @@ public class Note {
 
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
-} 
+}
