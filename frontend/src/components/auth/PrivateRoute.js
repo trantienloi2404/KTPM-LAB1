@@ -8,7 +8,7 @@ const PrivateRoute = ({ children }) => {
   const location = useLocation();
 
   // DEMO MODE: Bypass authentication for presentation
-  const DEMO_MODE = true; // Set to false to re-enable authentication
+  const DEMO_MODE = false; // Set to false to re-enable authentication
 
   if (loading) {
     return (

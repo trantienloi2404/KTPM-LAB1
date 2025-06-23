@@ -1,0 +1,42 @@
+services:
+  postgres-auth:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: authenticate_db
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d authenticate_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  authenticate-service:
+    build: ./authenticate-service-new
+    ports:
+      - "8081:8080"
+    environment:
+      - NODE_ENV=development
+      - DATASOURCE_HOST=postgres-auth
+      - DATASOURCE_PORT=5432
+      - DATASOURCE_USERNAME=myuser
+      - DATASOURCE_PASSWORD=mypass
+      - DATASOURCE_DATABASE=authenticate_db
+      - JWT_SECRET=your-secret-key-here
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - authenticate-service
+
+volumes:
+  postgres_data:

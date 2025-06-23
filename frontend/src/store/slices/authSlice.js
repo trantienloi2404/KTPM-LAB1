@@ -68,7 +68,7 @@ const initialState = {
     username: 'Demo User',
     email: 'demo@example.com'
   },
-  token: localStorage.getItem('token') || 'demo-token-for-presentation',
+  token: localStorage.getItem('token'), // || 'demo-token-for-presentation',
   loading: false,
   error: null,
 };

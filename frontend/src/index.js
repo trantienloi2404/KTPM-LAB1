@@ -10,7 +10,7 @@ import theme from './theme';
 import App from './App';
 
 // Demo Mode: Setup axios interceptors for API calls
-const DEMO_MODE = true;
+const DEMO_MODE = false;
 const DEMO_USER_ID = 1;
 
 // Configure base URLs for different environments
