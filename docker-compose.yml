@@ -88,28 +88,20 @@ services:
       - microservices-network
 
   authenticate-service:
-    build: ./authenticate-service
+    build: ./authenticate-service-new
     ports:
       - "8081:8081"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_authenticate:5432/authenticate_db
-      - SPRING_DATASOURCE_USERNAME=myuser
-      - SPRING_DATASOURCE_PASSWORD=mypass
-      - SPRING_DATA_REDIS_HOST=redis
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRATION=604800000
-      - SERVER_PORT=8081
+      - NODE_ENV=development
+      - DATASOURCE_HOST=postgres-auth
+      - DATASOURCE_PORT=5432
+      - DATASOURCE_USERNAME=myuser
+      - DATASOURCE_PASSWORD=mypass
+      - DATASOURCE_DATABASE=authenticate_db
+      - JWT_SECRET=jsdhfsbjdkf273hdgckasjgf823fjdbsc
     depends_on:
-      postgres_authenticate:
+      postgres-auth:
         condition: service_healthy
-      redis:
-        condition: service_healthy
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8081/api/auth/logout"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    restart: unless-stopped
     networks:
       - microservices-network
 

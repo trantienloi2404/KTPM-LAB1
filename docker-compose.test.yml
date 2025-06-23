@@ -26,7 +26,7 @@ services:
       - DATASOURCE_USERNAME=myuser
       - DATASOURCE_PASSWORD=mypass
       - DATASOURCE_DATABASE=authenticate_db
-      - JWT_SECRET=your-secret-key-here
+      - JWT_SECRET=jsdhfsbjdkf273hdgckasjgf823fjdbsc
     depends_on:
       postgres-auth:
         condition: service_healthy

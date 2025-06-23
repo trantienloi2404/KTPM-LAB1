@@ -17,7 +17,7 @@ import { register } from '../../store/slices/authSlice';
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    username: '',
     password: '',
     confirmPassword: '',
   });
@@ -38,11 +38,10 @@ const Register = () => {
     if (!formData.name) {
       newErrors.name = 'Name is required';
     }
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
+    if (!formData.username) {
+      newErrors.username = 'Username is required';
+    } 
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
@@ -130,14 +129,14 @@ const Register = () => {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={formData.email}
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              value={formData.username}
               onChange={handleChange}
-              error={!!errors.email}
-              helperText={errors.email}
+              error={!!errors.username}
+              helperText={errors.username}
               sx={{ mb: 2 }}
             />
             <TextField

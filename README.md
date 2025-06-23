@@ -155,6 +155,11 @@ Each service provides its own Swagger documentation:
 - Image Service: http://localhost:8083/swagger-ui.html
 - Notification Service: http://localhost:8084/swagger-ui.html
 
+## For testing frontend with authenticate-service only: 
+```
+docker compose -f docker-compose.test.yml up --build
+```
+
 ## Contributing
 
 1. Fork the repository
