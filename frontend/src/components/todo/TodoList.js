@@ -42,7 +42,11 @@ function TodoList() {
 
   const handleAddTodo = () => {
     if (newTodo.trim()) {
-      dispatch(addTodo({ title: newTodo }));
+      dispatch(addTodo({ 
+        title: newTodo, 
+        time: new Date().toISOString(), // Current time
+        userId: 1 // Default userId
+      }));
       setNewTodo('');
     }
   };
@@ -60,7 +64,10 @@ function TodoList() {
   };
 
   const handleToggleComplete = (todo) => {
-    dispatch(updateTodo({ ...todo, completed: !todo.completed }));
+    dispatch(updateTodo({ 
+      ...todo, 
+      isDone: !todo.isDone // Changed from 'completed' to 'isDone' to match backend
+    }));
   };
 
   return (
@@ -81,6 +88,7 @@ function TodoList() {
             variant="contained"
             startIcon={<AddIcon />}
             onClick={handleAddTodo}
+            disabled={loading}
           >
             Add
           </Button>
@@ -89,7 +97,11 @@ function TodoList() {
 
       <Paper>
         <List>
-          {todos.map((todo) => (
+          {loading ? (
+            <ListItem>
+              <ListItemText primary="Loading todos..." />
+            </ListItem>
+          ) : Array.isArray(todos) && todos.length > 0 ? todos.map((todo) => (
             <ListItem
               key={todo.id}
               divider
@@ -116,17 +128,22 @@ function TodoList() {
               }
             >
               <Checkbox
-                checked={todo.completed}
+                checked={todo.isDone} // Changed from 'completed' to 'isDone' to match backend
                 onChange={() => handleToggleComplete(todo)}
               />
               <ListItemText
                 primary={todo.title}
+                // secondary={new Date(todo.time).toLocaleString()} // Display formatted time
                 sx={{
-                  textDecoration: todo.completed ? 'line-through' : 'none',
+                  textDecoration: todo.isDone ? 'line-through' : 'none', // Changed from 'completed' to 'isDone'
                 }}
               />
             </ListItem>
-          ))}
+          )) : (
+            <ListItem>
+              <ListItemText primary="No todos found. Add some todos to get started!" />
+            </ListItem>
+          )}
         </List>
       </Paper>
 
@@ -145,11 +162,11 @@ function TodoList() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button onClick={handleUpdateTodo}>Save</Button>
+          <Button onClick={handleUpdateTodo} disabled={loading}>Save</Button>
         </DialogActions>
       </Dialog>
     </Box>
   );
 }
 
-export default TodoList; 
+export default TodoList;

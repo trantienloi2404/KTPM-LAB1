@@ -88,28 +88,20 @@ services:
       - microservices-network
 
   authenticate-service:
-    build: ./authenticate-service
+    build: ./authenticate-service-new
     ports:
       - "8081:8081"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_authenticate:5432/authenticate_db
-      - SPRING_DATASOURCE_USERNAME=myuser
-      - SPRING_DATASOURCE_PASSWORD=mypass
-      - SPRING_DATA_REDIS_HOST=redis
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRATION=604800000
-      - SERVER_PORT=8081
+      - NODE_ENV=development
+      - DATASOURCE_HOST=postgres_authenticate
+      - DATASOURCE_PORT=5432
+      - DATASOURCE_USERNAME=myuser
+      - DATASOURCE_PASSWORD=mypass
+      - DATASOURCE_DATABASE=authenticate_db
+      - JWT_SECRET=jsdhfsbjdkf273hdgckasjgf823fjdbsc
     depends_on:
       postgres_authenticate:
         condition: service_healthy
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
     networks:
       - microservices-network
 
@@ -123,16 +115,17 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mypass
       - SPRING_DATA_REDIS_HOST=redis
       - SERVER_PORT=8082
+      - SPRING_CACHE_TYPE=NONE
     depends_on:
       postgres_todo:
         condition: service_healthy
       redis:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8082/api/todos?userId=1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
     restart: unless-stopped
     networks:
       - microservices-network
@@ -150,9 +143,6 @@ services:
       - AUTH_SERVICE_URL=http://authenticate-service:8081
       - TODO_SERVICE_URL=http://todotask-service:8082
       - IMAGE_SERVICE_URL=http://image-service:8084
-    volumes:
-      - ./notification-service/data:/app/data
-      - ./notification-service/logs:/app/logs
     depends_on:
       postgres_notification:
         condition: service_healthy
@@ -206,27 +196,18 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "80:80"
+      - "3001:80"
     environment:
-      - REACT_APP_API_URL=http://localhost:8080
-      - REACT_APP_WS_URL=ws://localhost:8080
+      # No REACT_APP_API_URL - use nginx proxy (same origin)
       - REACT_APP_CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - REACT_APP_CLOUDINARY_UPLOAD_PRESET=${CLOUDINARY_UPLOAD_PRESET}
-      - REACT_APP_FIREBASE_API_KEY=${FIREBASE_API_KEY}
       - REACT_APP_FIREBASE_AUTH_DOMAIN=${FIREBASE_AUTH_DOMAIN}
       - REACT_APP_FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
       - REACT_APP_FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
       - REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}
       - REACT_APP_FIREBASE_APP_ID=${FIREBASE_APP_ID}
     depends_on:
-      authenticate-service:
-        condition: service_healthy
-      todotask-service:
-        condition: service_healthy
-      notification-service:
-        condition: service_healthy
-      image-service:
-        condition: service_healthy
+      - authenticate-service
+      - todotask-service
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
       interval: 30s
@@ -246,4 +227,4 @@ volumes:
   postgres_notification_data:
   postgres_image_data:
   redis_data:
-  image_uploads: 
+  image_uploads:

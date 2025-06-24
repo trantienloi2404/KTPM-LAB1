@@ -3,19 +3,22 @@ package com.todo.entity;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "todos")
-public class Todo {
+public class Todo implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
-    
+
     @JsonProperty("isDone")
     private boolean isDone;
-    
+
     private LocalDateTime time;
 
     private Long userId;
@@ -29,7 +32,7 @@ public class Todo {
 
     @JsonProperty("isDone")
     public boolean isDone() { return isDone; }
-    
+
     @JsonProperty("isDone")
     public void setDone(boolean done) { isDone = done; }
 

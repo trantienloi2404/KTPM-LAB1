@@ -7,6 +7,9 @@ const PrivateRoute = ({ children }) => {
   const { token, loading } = useSelector((state) => state.auth);
   const location = useLocation();
 
+  // DEMO MODE: Bypass authentication for presentation
+  const DEMO_MODE = false; // Set to false to re-enable authentication
+
   if (loading) {
     return (
       <Box
@@ -20,6 +23,11 @@ const PrivateRoute = ({ children }) => {
         <CircularProgress />
       </Box>
     );
+  }
+
+  // In demo mode, always allow access
+  if (DEMO_MODE) {
+    return children;
   }
 
   if (!token) {
