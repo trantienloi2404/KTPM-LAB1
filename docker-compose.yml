@@ -100,7 +100,7 @@ services:
       - DATASOURCE_DATABASE=authenticate_db
       - JWT_SECRET=jsdhfsbjdkf273hdgckasjgf823fjdbsc
     depends_on:
-      postgres-auth:
+      postgres-authenticate:
         condition: service_healthy
     networks:
       - microservices-network
