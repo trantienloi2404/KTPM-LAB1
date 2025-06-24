@@ -27,11 +27,11 @@ const Register = () => {
   const navigate = useNavigate();
   const { loading, error, token } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (token) {
-      navigate('/todos');
-    }
-  }, [token, navigate]);
+  // useEffect(() => {
+  //   if (token) {
+  //     navigate('/todos');
+  //   }
+  // }, [token, navigate]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -74,7 +74,10 @@ const Register = () => {
     e.preventDefault();
     if (validateForm()) {
       const { confirmPassword, ...registerData } = formData;
-      dispatch(register(registerData));
+      const result = await dispatch(register(registerData));
+      if (!result.error) {
+        navigate('/');
+      }
     }
   };
 

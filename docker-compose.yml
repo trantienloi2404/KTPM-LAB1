@@ -93,7 +93,7 @@ services:
       - "8081:8081"
     environment:
       - NODE_ENV=development
-      - DATASOURCE_HOST=postgres-auth
+      - DATASOURCE_HOST=postgres_authenticate
       - DATASOURCE_PORT=5432
       - DATASOURCE_USERNAME=myuser
       - DATASOURCE_PASSWORD=mypass
@@ -143,9 +143,6 @@ services:
       - AUTH_SERVICE_URL=http://authenticate-service:8081
       - TODO_SERVICE_URL=http://todotask-service:8082
       - IMAGE_SERVICE_URL=http://image-service:8084
-    volumes:
-      - ./notification-service/data:/app/data
-      - ./notification-service/logs:/app/logs
     depends_on:
       postgres_notification:
         condition: service_healthy
@@ -230,4 +227,4 @@ volumes:
   postgres_notification_data:
   postgres_image_data:
   redis_data:
-  image_uploads: 
+  image_uploads:

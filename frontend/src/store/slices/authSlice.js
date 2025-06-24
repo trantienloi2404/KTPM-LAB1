@@ -63,11 +63,7 @@ export const updateProfile = createAsyncThunk(
 );
 
 const initialState = {
-  user: {
-    id: 'demo-user',
-    username: 'Demo User',
-    email: 'demo@example.com'
-  },
+  user: null,
   token: localStorage.getItem('token'), // || 'demo-token-for-presentation',
   loading: false,
   error: null,
