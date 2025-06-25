@@ -43,7 +43,7 @@ Create a `.env` file in the root directory with the following variables:
 ```bash
 # Application
 NODE_ENV=development
-PORT=8080
+PORT=8081
 
 # Database Configuration
 SPRING_DATASOURCE_HOST=localhost
@@ -98,7 +98,7 @@ $ npm run start:prod
 ## API Documentation
 
 Once the application is running, visit:
-- Swagger UI: http://localhost:8080/api
+- Swagger UI: http://localhost:8081/api
 
 ## Database Schema
 
@@ -155,7 +155,7 @@ The service includes a Dockerfile for containerization. Build and run:
 $ docker build -t authenticate-service-new .
 
 # Run container
-$ docker run -p 8080:8080 authenticate-service-new
+$ docker run -p 8081:8081 authenticate-service-new
 ```
 
 ## Deployment
