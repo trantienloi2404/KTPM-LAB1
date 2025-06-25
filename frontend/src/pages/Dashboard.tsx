@@ -38,12 +38,6 @@ const Dashboard: React.FC = () => {
           </div>
           
           <div className="service-card">
-            <h4>Images</h4>
-            <p>Upload and manage your images</p>
-            <a href="/images" className="service-link">Go to Images</a>
-          </div>
-          
-          <div className="service-card">
             <h4>Notifications</h4>
             <p>View your recent notifications</p>
             <a href="/notifications" className="service-link">Go to Notifications</a>
