@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: microservices-app
+data:
+  POSTGRES_USER: "myuser"
+  POSTGRES_PASSWORD: "mypass"
+  JWT_SECRET: "jsdhfsbjdkf273hdgckasjgf823fjdbsc"
+  NODE_ENV: "production"
+  REDIS_URL: "redis://redis-service:6379"
+  AUTH_SERVICE_URL: "http://authenticate-service:8081"
+  TODO_SERVICE_URL: "http://todotask-service:8082"
+  NOTIFICATION_SERVICE_URL: "http://notification-service:8083"
+  IMAGE_SERVICE_URL: "http://image-service:8084"
+  ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:8080" 
