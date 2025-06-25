@@ -33,4 +33,21 @@ module.exports = function(app) {
       pathRewrite: { '^/api': '/api' }
     })
   );
+
+  app.use(
+    '/api/images',
+    createProxyMiddleware({
+      target: 'http://localhost:8084',
+      changeOrigin: true,
+      // Add these options for file uploads
+      onProxyReq: (proxyReq, req, res) => {
+        // For multipart forms, don't touch the body
+        if (req.method === 'POST' && req.headers['content-type'] && 
+            req.headers['content-type'].startsWith('multipart/form-data')) {
+          return;
+        }
+      },
+      logLevel: 'debug' // This helps with debugging
+    })
+  );
 };

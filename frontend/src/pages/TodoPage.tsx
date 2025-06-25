@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useTodo } from '../context/TodoContext';
-import { useAuth } from '../context/AuthContext';
-import TodoItem from '../components/TodoItem';
-import NoteItem from '../components/NoteItem';
-import TodoForm from '../components/TodoForm';
-import NoteForm from '../components/NoteForm';
-import { Todo, Note } from '../types/todo';
+import React, { useState, useEffect } from "react";
+import { useTodo } from "../context/TodoContext";
+import { useAuth } from "../context/AuthContext";
+import TodoItem from "../components/TodoItem";
+import NoteItem from "../components/NoteItem";
+import TodoForm from "../components/TodoForm";
+import NoteForm from "../components/NoteForm";
+import { Todo, Note } from "../types/todo";
 
 const TodoPage: React.FC = () => {
   const { user } = useAuth();
@@ -22,14 +22,14 @@ const TodoPage: React.FC = () => {
     deleteTodo,
     addNote,
     updateNote,
-    deleteNote
+    deleteNote,
   } = useTodo();
 
   const [showTodoForm, setShowTodoForm] = useState(false);
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const [activeTab, setActiveTab] = useState<'todos' | 'notes'>('todos');
+  const [activeTab, setActiveTab] = useState<"todos" | "notes">("todos");
 
   useEffect(() => {
     if (user) {
@@ -58,7 +58,7 @@ const TodoPage: React.FC = () => {
     setShowNoteForm(true);
   };
 
-  const handleTodoSubmit = async (todoData: Omit<Todo, 'id'>) => {
+  const handleTodoSubmit = async (todoData: Omit<Todo, "id">) => {
     if (editingTodo) {
       await updateTodo(editingTodo.id!, { ...todoData, id: editingTodo.id });
     } else {
@@ -68,24 +68,26 @@ const TodoPage: React.FC = () => {
     setEditingTodo(null);
   };
 
-  const handleNoteSubmit = async (noteData: Omit<Note, 'id'>) => {
+  const handleNoteSubmit = async (
+    noteData: Omit<Note, "id">,
+    imagesToUpload?: File[]
+  ) => {
     if (editingNote) {
       await updateNote(editingNote.id!, { ...noteData, id: editingNote.id });
     } else {
-      await addNote(noteData);
+      await addNote(noteData, imagesToUpload);
     }
     setShowNoteForm(false);
     setEditingNote(null);
   };
-
   // Sort todos by date (most recent first)
-  const sortedTodos = [...todos].sort((a, b) => 
-    new Date(b.time).getTime() - new Date(a.time).getTime()
+  const sortedTodos = [...todos].sort(
+    (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
   );
 
   // Sort notes by date (most recent first)
-  const sortedNotes = [...notes].sort((a, b) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
+  const sortedNotes = [...notes].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
   if (!user) {
@@ -101,31 +103,31 @@ const TodoPage: React.FC = () => {
       <h1>Your Tasks and Notes</h1>
 
       {error && <div className="error-message">{error}</div>}
-      
+
       <div className="tabs">
-        <button 
-          className={`tab ${activeTab === 'todos' ? 'active' : ''}`} 
-          onClick={() => setActiveTab('todos')}
+        <button
+          className={`tab ${activeTab === "todos" ? "active" : ""}`}
+          onClick={() => setActiveTab("todos")}
         >
           Tasks ({todos.length})
         </button>
-        <button 
-          className={`tab ${activeTab === 'notes' ? 'active' : ''}`} 
-          onClick={() => setActiveTab('notes')}
+        <button
+          className={`tab ${activeTab === "notes" ? "active" : ""}`}
+          onClick={() => setActiveTab("notes")}
         >
           Notes ({notes.length})
         </button>
       </div>
-      
+
       <div className="tab-content">
-        {activeTab === 'todos' ? (
+        {activeTab === "todos" ? (
           <div className="todos-container">
             <div className="actions-bar">
               <button onClick={handleAddTodo} className="add-button">
                 Add New Task
               </button>
             </div>
-            
+
             {showTodoForm && (
               <TodoForm
                 onSubmit={handleTodoSubmit}
@@ -139,11 +141,14 @@ const TodoPage: React.FC = () => {
               <div className="loading">Loading tasks...</div>
             ) : sortedTodos.length === 0 ? (
               <div className="empty-state">
-                <p>You don't have any tasks yet. Click the button above to add one.</p>
+                <p>
+                  You don't have any tasks yet. Click the button above to add
+                  one.
+                </p>
               </div>
             ) : (
               <div className="todo-list">
-                {sortedTodos.map(todo => (
+                {sortedTodos.map((todo) => (
                   <TodoItem
                     key={todo.id}
                     todo={todo}
@@ -162,7 +167,7 @@ const TodoPage: React.FC = () => {
                 Add New Note
               </button>
             </div>
-            
+
             {showNoteForm && (
               <NoteForm
                 onSubmit={handleNoteSubmit}
@@ -176,11 +181,14 @@ const TodoPage: React.FC = () => {
               <div className="loading">Loading notes...</div>
             ) : sortedNotes.length === 0 ? (
               <div className="empty-state">
-                <p>You don't have any notes yet. Click the button above to add one.</p>
+                <p>
+                  You don't have any notes yet. Click the button above to add
+                  one.
+                </p>
               </div>
             ) : (
               <div className="note-list">
-                {sortedNotes.map(note => (
+                {sortedNotes.map((note) => (
                   <NoteItem
                     key={note.id}
                     note={note}

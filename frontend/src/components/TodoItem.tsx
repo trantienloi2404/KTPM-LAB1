@@ -29,7 +29,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onEdit, onDelete })
         />
         <div className="todo-details">
           <h3 className={todo.isDone ? 'completed-text' : ''}>{todo.title}</h3>
-          <p className="todo-date">{formatDate(todo.time)}</p>
+          {/* <p className="todo-date">{formatDate(todo.time)}</p> */}
         </div>
       </div>
       <div className="todo-actions">

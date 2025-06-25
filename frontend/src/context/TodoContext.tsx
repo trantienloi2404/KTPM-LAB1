@@ -1,7 +1,14 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import { todoApi } from '../api/todoApi';
-import { Todo, Note, ApiResponse } from '../types/todo';
-import { useAuth } from './AuthContext';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from "react";
+import { todoApi } from "../api/todoApi";
+import { Todo, Note, ApiResponse } from "../types/todo";
+import { useAuth } from "./AuthContext";
+import { imageApi } from "../api/imageApi";
 
 interface TodoContextType {
   todos: Todo[];
@@ -10,11 +17,11 @@ interface TodoContextType {
   error: string | null;
   fetchTodos: () => Promise<void>;
   fetchNotes: () => Promise<void>;
-  addTodo: (todo: Omit<Todo, 'id'>) => Promise<void>;
+  addTodo: (todo: Omit<Todo, "id">) => Promise<void>;
   updateTodo: (id: number, todo: Todo) => Promise<void>;
   toggleTodoStatus: (id: number, isDone: boolean) => Promise<void>;
   deleteTodo: (id: number) => Promise<void>;
-  addNote: (note: Omit<Note, 'id'>) => Promise<void>;
+  addNote: (note: Omit<Note, "id">, imagesToUpload?: File[]) => Promise<void>; // Updated
   updateNote: (id: number, note: Note) => Promise<void>;
   deleteNote: (id: number) => Promise<void>;
 }
@@ -44,7 +51,7 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const { user } = useAuth();
 
   // Fetch todos for the authenticated user
@@ -52,20 +59,20 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
     if (!user) return;
 
     console.log("User: ", user);
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<Todo[]> = await todoApi.getTodos(user.id);
       if (response.status === 200 && response.data) {
         setTodos(response.data);
       } else {
-        setError(response.message || 'Failed to fetch todos');
+        setError(response.message || "Failed to fetch todos");
       }
     } catch (err) {
-      console.error('Error fetching todos:', err);
-      setError('Failed to fetch todos. Please try again.');
+      console.error("Error fetching todos:", err);
+      setError("Failed to fetch todos. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -74,40 +81,42 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   // Fetch notes for the authenticated user
   const fetchNotes = async () => {
     if (!user) return;
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<Note[]> = await todoApi.getNotes(user.id);
       if (response.status === 200 && response.data) {
         setNotes(response.data);
       } else {
-        setError(response.message || 'Failed to fetch notes');
+        setError(response.message || "Failed to fetch notes");
       }
     } catch (err) {
-      console.error('Error fetching notes:', err);
-      setError('Failed to fetch notes. Please try again.');
+      console.error("Error fetching notes:", err);
+      setError("Failed to fetch notes. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   // Add a new todo
-  const addTodo = async (todo: Omit<Todo, 'id'>) => {
+  const addTodo = async (todo: Omit<Todo, "id">) => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response: ApiResponse<Todo> = await todoApi.createTodo(todo as Todo);
+      const response: ApiResponse<Todo> = await todoApi.createTodo(
+        todo as Todo
+      );
       if (response.status === 201 && response.data) {
-        setTodos(prevTodos => [...prevTodos, response.data]);
+        setTodos((prevTodos) => [...prevTodos, response.data]);
       } else {
-        setError(response.message || 'Failed to create todo');
+        setError(response.message || "Failed to create todo");
       }
     } catch (err) {
-      console.error('Error creating todo:', err);
-      setError('Failed to create todo. Please try again.');
+      console.error("Error creating todo:", err);
+      setError("Failed to create todo. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -117,19 +126,19 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const updateTodo = async (id: number, todo: Todo) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<Todo> = await todoApi.updateTodo(id, todo);
       if (response.status === 200 && response.data) {
-        setTodos(prevTodos => 
-          prevTodos.map(t => t.id === id ? response.data : t)
+        setTodos((prevTodos) =>
+          prevTodos.map((t) => (t.id === id ? response.data : t))
         );
       } else {
-        setError(response.message || 'Failed to update todo');
+        setError(response.message || "Failed to update todo");
       }
     } catch (err) {
-      console.error('Error updating todo:', err);
-      setError('Failed to update todo. Please try again.');
+      console.error("Error updating todo:", err);
+      setError("Failed to update todo. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -139,19 +148,19 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const toggleTodoStatus = async (id: number, isDone: boolean) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<Todo> = await todoApi.markTodo(id, isDone);
       if (response.status === 200 && response.data) {
-        setTodos(prevTodos => 
-          prevTodos.map(t => t.id === id ? response.data : t)
+        setTodos((prevTodos) =>
+          prevTodos.map((t) => (t.id === id ? response.data : t))
         );
       } else {
-        setError(response.message || 'Failed to update todo status');
+        setError(response.message || "Failed to update todo status");
       }
     } catch (err) {
-      console.error('Error updating todo status:', err);
-      setError('Failed to update todo status. Please try again.');
+      console.error("Error updating todo status:", err);
+      setError("Failed to update todo status. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -161,37 +170,74 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const deleteTodo = async (id: number) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<void> = await todoApi.deleteTodo(id);
       if (response.status === 200) {
-        setTodos(prevTodos => prevTodos.filter(t => t.id !== id));
+        setTodos((prevTodos) => prevTodos.filter((t) => t.id !== id));
       } else {
-        setError(response.message || 'Failed to delete todo');
+        setError(response.message || "Failed to delete todo");
       }
     } catch (err) {
-      console.error('Error deleting todo:', err);
-      setError('Failed to delete todo. Please try again.');
+      console.error("Error deleting todo:", err);
+      setError("Failed to delete todo. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Add a new note
-  const addNote = async (note: Omit<Note, 'id'>) => {
+  // Update the addNote function to handle image uploads
+  const addNote = async (note: Omit<Note, "id">, imagesToUpload?: File[]) => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response: ApiResponse<Note> = await todoApi.createNote(note as Note);
+      // First create the note
+      const response: ApiResponse<Note> = await todoApi.createNote(
+        note as Note
+      );
+
       if (response.status === 201 && response.data) {
-        setNotes(prevNotes => [...prevNotes, response.data]);
+        // Add the note to state
+        setNotes((prevNotes) => [...prevNotes, response.data]);
+
+        // If there are images to upload
+        if (imagesToUpload && imagesToUpload.length > 0 && response.data.id) {
+          const noteId = response.data.id.toString();
+          const userId = note.userId.toString();
+
+          // Upload each image
+          let uploadErrors = 0;
+          for (const imageFile of imagesToUpload) {
+            try {
+              console.log(
+                `Uploading image: ${imageFile.name} (${imageFile.type}, ${imageFile.size} bytes)`
+              );
+              const uploadedImage = await imageApi.uploadImage(
+                imageFile,
+                noteId,
+                userId
+              );
+              console.log("Image uploaded successfully:", uploadedImage);
+            } catch (imageError) {
+              console.error("Error uploading image:", imageError);
+              uploadErrors++;
+              // Continue with other images even if one fails
+            }
+          }
+
+          if (uploadErrors > 0) {
+            setError(
+              `Note was created, but ${uploadErrors} image(s) failed to upload. You can try adding them later.`
+            );
+          }
+        }
       } else {
-        setError(response.message || 'Failed to create note');
+        setError(response.message || "Failed to create note");
       }
     } catch (err) {
-      console.error('Error creating note:', err);
-      setError('Failed to create note. Please try again.');
+      console.error("Error creating note:", err);
+      setError("Failed to create note. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -201,19 +247,19 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const updateNote = async (id: number, note: Note) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<Note> = await todoApi.updateNote(id, note);
       if (response.status === 200 && response.data) {
-        setNotes(prevNotes => 
-          prevNotes.map(n => n.id === id ? response.data : n)
+        setNotes((prevNotes) =>
+          prevNotes.map((n) => (n.id === id ? response.data : n))
         );
       } else {
-        setError(response.message || 'Failed to update note');
+        setError(response.message || "Failed to update note");
       }
     } catch (err) {
-      console.error('Error updating note:', err);
-      setError('Failed to update note. Please try again.');
+      console.error("Error updating note:", err);
+      setError("Failed to update note. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -223,17 +269,17 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const deleteNote = async (id: number) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<void> = await todoApi.deleteNote(id);
       if (response.status === 200) {
-        setNotes(prevNotes => prevNotes.filter(n => n.id !== id));
+        setNotes((prevNotes) => prevNotes.filter((n) => n.id !== id));
       } else {
-        setError(response.message || 'Failed to delete note');
+        setError(response.message || "Failed to delete note");
       }
     } catch (err) {
-      console.error('Error deleting note:', err);
-      setError('Failed to delete note. Please try again.');
+      console.error("Error deleting note:", err);
+      setError("Failed to delete note. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -262,7 +308,7 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
         deleteTodo,
         addNote,
         updateNote,
-        deleteNote
+        deleteNote,
       }}
     >
       {children}
