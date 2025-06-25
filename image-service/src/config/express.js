@@ -9,7 +9,7 @@ module.exports = (app) => {
   app.use(helmet());
 
   // CORS configuration
-  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'];
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3001'];
   app.use(cors({
     origin: (origin, callback) => {
       // Cho phép requests không có origin (như mobile apps hoặc curl requests)

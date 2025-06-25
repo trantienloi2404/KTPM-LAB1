@@ -28,13 +28,9 @@ export const imageApi = {
       formData.append('noteId', noteId);
       formData.append('userId', userId);
       
-      // Set proper content type header - let the browser set the boundary
       const response = await api.post('/images', formData, {
         headers: {
-          // Remove content-type here to let the browser set it with the correct boundary
-          // 'Content-Type': 'multipart/form-data' is automatically set by the browser
         },
-        // Add timeout to ensure request doesn't hang
         timeout: 30000,
       });
       

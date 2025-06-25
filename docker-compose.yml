@@ -173,7 +173,7 @@ services:
       - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
       - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
       - FIREBASE_DATABASE_URL=${FIREBASE_DATABASE_URL}
-      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080,http://localhost:3001
       - AUTH_SERVICE_URL=http://authenticate-service:8081
       - TODO_SERVICE_URL=http://todotask-service:8082
       - NOTIFICATION_SERVICE_URL=http://notification-service:8083
@@ -206,8 +206,10 @@ services:
       - REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}
       - REACT_APP_FIREBASE_APP_ID=${FIREBASE_APP_ID}
     depends_on:
+      - image-service
       - authenticate-service
       - todotask-service
+      - notification-service
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
       interval: 30s
