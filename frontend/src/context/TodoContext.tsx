@@ -50,6 +50,8 @@ export const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   // Fetch todos for the authenticated user
   const fetchTodos = async () => {
     if (!user) return;
+
+    console.log("User: ", user);
     
     setLoading(true);
     setError(null);

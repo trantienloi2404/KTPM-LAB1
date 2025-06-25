@@ -67,6 +67,14 @@ export class AuthService {
     return new ApiResponseDto(200, 'Login successful', token);
   }
 
+  // New method to get user by ID
+  async getUserById(id: number): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'username'] // Exclude password
+    });
+  }
+
   private generateToken(username: string, userId: number): string {
     const payload = { username, sub: userId };
     return this.jwtService.sign(payload, {
@@ -74,4 +82,4 @@ export class AuthService {
       expiresIn: this.configService.get<string>('jwt.expiresIn'),
     });
   }
-} 
+}

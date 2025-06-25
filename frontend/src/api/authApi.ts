@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Create axios instance with credentials
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: "/api",
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -14,7 +14,7 @@ export const authApi = {
   // Register new user
   register: async (username: string, password: string) => {
     try {
-      const response = await api.post('/auth/register', { username, password });
+      const response = await api.post("/auth/register", { username, password });
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -27,7 +27,7 @@ export const authApi = {
   // Login user
   login: async (username: string, password: string) => {
     try {
-      const response = await api.post('/auth/login', { username, password });
+      const response = await api.post("/auth/login", { username, password });
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -40,7 +40,7 @@ export const authApi = {
   // Logout user
   logout: async () => {
     try {
-      const response = await api.post('/auth/logout');
+      const response = await api.post("/auth/logout");
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -53,14 +53,16 @@ export const authApi = {
   // Check if user is authenticated
   checkAuth: async () => {
     try {
-      // You'll need to implement an endpoint for this in your backend
-      const response = await api.get('/auth/me');
+      const response = await api.get("/auth/me");
       return response.data;
     } catch (error) {
+      console.error("Auth check error:", error);
       if (axios.isAxiosError(error) && error.response) {
-        return { statusCode: 401, message: 'Not authenticated', data: null };
+        // Return the error response
+        return error.response.data;
       }
-      throw error;
+      // Return a default error response
+      return { statusCode: 401, message: "Not authenticated", data: null };
     }
-  }
+  },
 };

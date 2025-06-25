@@ -7,18 +7,15 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  
   app.enableCors({
-    origin: true,
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: '*',
+    allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
     credentials: true,
   });
 
- 
   app.use(cookieParser());
 
-  
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -27,14 +24,13 @@ async function bootstrap() {
     }),
   );
 
-  
   const config = new DocumentBuilder()
     .setTitle('Authentication Service API')
     .setDescription('Authentication service for microservices')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 

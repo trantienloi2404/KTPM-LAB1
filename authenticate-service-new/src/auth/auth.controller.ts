@@ -1,10 +1,11 @@
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpStatus, Get, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { AuthRequestDto } from './dto/auth-request.dto';
 import { ApiResponseDto } from '../common/dto/api-response.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @ApiTags('Authentication')
 @Controller('api/auth')
@@ -85,6 +86,31 @@ export class AuthController {
     return new ApiResponseDto(200, 'Logged out successfully', null);
   }
 
+  // New endpoint for getting the current authenticated user
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get current authenticated user' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'User information retrieved successfully',
+    type: ApiResponseDto
+  })
+  @ApiResponse({ 
+    status: 401, 
+    description: 'Not authenticated',
+    type: ApiResponseDto
+  })
+  async getCurrentUser(@Request() req): Promise<ApiResponseDto<any>> {
+    // The user property is added by the JwtAuthGuard
+    const user = req.user;
+    
+    // Return user info (excluding the password)
+    return new ApiResponseDto(200, 'User retrieved successfully', {
+      id: user.id,
+      username: user.username
+    });
+  }
+
   private setAuthCookie(response: Response, token: string): void {
     response.cookie('auth_token', token, {
       path: '/',
@@ -94,4 +120,4 @@ export class AuthController {
       sameSite: 'strict',
     });
   }
-} 
+}

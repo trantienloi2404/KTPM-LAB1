@@ -1,5 +1,11 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import { authApi } from '../api/authApi';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from "react";
+import { authApi } from "../api/authApi";
 
 // User interface
 interface User {
@@ -44,13 +50,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         setLoading(true);
         const response = await authApi.checkAuth();
-        
+
         if (response.statusCode === 200 && response.data) {
           setUser(response.data);
+        } else {
+          // Clear user state if not authenticated
+          setUser(null);
         }
       } catch (err) {
-        console.error('Auth check failed:', err);
-        setError('Authentication check failed');
+        console.error("Auth check failed:", err);
+        setError("Authentication check failed");
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -60,44 +70,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   // Login function
-  const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (
+    username: string,
+    password: string
+  ): Promise<boolean> => {
     setError(null);
     try {
       const response = await authApi.login(username, password);
-      
+
       if (response.statusCode === 200 && response.data) {
         // We don't need to store the token as it's in the HttpOnly cookie
         // Just set the user state from the response if available
         setUser({ id: 0, username }); // You might want to get actual user data from the server
         return true;
       } else {
-        setError(response.message || 'Login failed');
+        setError(response.message || "Login failed");
         return false;
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Login failed. Please try again.');
+      console.error("Login error:", err);
+      setError("Login failed. Please try again.");
       return false;
     }
   };
 
   // Register function
-  const register = async (username: string, password: string): Promise<boolean> => {
+  const register = async (
+    username: string,
+    password: string
+  ): Promise<boolean> => {
     setError(null);
     try {
       const response = await authApi.register(username, password);
-      
+
       if (response.statusCode === 201 && response.data) {
         // Similar to login, we rely on the HttpOnly cookie
         setUser({ id: 0, username });
         return true;
       } else {
-        setError(response.message || 'Registration failed');
+        setError(response.message || "Registration failed");
         return false;
       }
     } catch (err) {
-      console.error('Registration error:', err);
-      setError('Registration failed. Please try again.');
+      console.error("Registration error:", err);
+      setError("Registration failed. Please try again.");
       return false;
     }
   };
@@ -108,8 +124,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await authApi.logout();
       setUser(null);
     } catch (err) {
-      console.error('Logout error:', err);
-      setError('Logout failed. Please try again.');
+      console.error("Logout error:", err);
+      setError("Logout failed. Please try again.");
     }
   };
 
