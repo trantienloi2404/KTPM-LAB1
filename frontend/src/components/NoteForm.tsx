@@ -15,19 +15,43 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialData, onCancel, us
   const [errors, setErrors] = useState<{ title?: string; description?: string; date?: string }>({});
 
   useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title);
-      setDescription(initialData.description);
-      
-      // Convert ISO string to local datetime-local format
-      const noteDate = new Date(initialData.date);
-      const localDatetime = new Date(noteDate.getTime() - noteDate.getTimezoneOffset() * 60000)
-        .toISOString()
-        .slice(0, 16);
-      
-      setDate(localDatetime);
-    } else {
-      // Default to current date/time
+    try {
+      if (initialData) {
+        setTitle(initialData.title);
+        setDescription(initialData.description);
+        
+        // Safely convert ISO string to local datetime-local format
+        const noteDate = new Date(initialData.date);
+        
+        // Check if date is valid before proceeding
+        if (!isNaN(noteDate.getTime())) {
+          const localDatetime = new Date(noteDate.getTime() - noteDate.getTimezoneOffset() * 60000)
+            .toISOString()
+            .slice(0, 16);
+          
+          setDate(localDatetime);
+        } else {
+          // If date is invalid, use current date/time
+          const now = new Date();
+          const localDatetime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+            .toISOString()
+            .slice(0, 16);
+          
+          setDate(localDatetime);
+          console.warn('Invalid date received:', initialData.date);
+        }
+      } else {
+        // Default to current date/time
+        const now = new Date();
+        const localDatetime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+          .toISOString()
+          .slice(0, 16);
+        
+        setDate(localDatetime);
+      }
+    } catch (error) {
+      console.error('Error setting date:', error);
+      // Fallback to current date/time
       const now = new Date();
       const localDatetime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
         .toISOString()
@@ -63,15 +87,29 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialData, onCancel, us
       return;
     }
     
-    const noteData: Omit<Note, 'id'> = {
-      title,
-      description,
-      date: new Date(date).toISOString(),
-      userId,
-    };
-    
-    await onSubmit(noteData);
-    onCancel();
+    try {
+      // Create a valid date object
+      const dateObj = new Date(date);
+      
+      // Verify the date is valid
+      if (isNaN(dateObj.getTime())) {
+        setErrors(prev => ({ ...prev, date: 'Invalid date format' }));
+        return;
+      }
+      
+      const noteData: Omit<Note, 'id'> = {
+        title,
+        description,
+        date: dateObj.toISOString(),
+        userId,
+      };
+      
+      await onSubmit(noteData);
+      onCancel();
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setErrors(prev => ({ ...prev, date: 'Error processing date' }));
+    }
   };
 
   return (

@@ -2,8 +2,10 @@ package com.todo.entity;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+
 import java.io.Serializable;
+
 
 @Entity
 @Table(name = "todos")
@@ -19,7 +21,7 @@ public class Todo implements Serializable {
     @JsonProperty("isDone")
     private boolean isDone;
 
-    private LocalDateTime time;
+    private OffsetDateTime time;
 
     private Long userId;
 
