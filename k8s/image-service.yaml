@@ -4,6 +4,7 @@ metadata:
   name: image-uploads-pvc
   namespace: microservices-app
 spec:
+  storageClassName: standard
   accessModes:
     - ReadWriteOnce
   resources:
