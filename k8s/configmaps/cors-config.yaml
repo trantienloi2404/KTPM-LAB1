@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cors-config
+data:
+  ALLOWED_ORIGINS: "http://frontend-service,http://localhost:3000,http://localhost:3001,http://127.0.0.1:*"
+  CORS_METHODS: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+  CORS_HEADERS: "Content-Type,Authorization,X-Requested-With,Accept,Origin"
+  CORS_CREDENTIALS: "true"

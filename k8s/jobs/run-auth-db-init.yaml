@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: run-auth-db-init
+spec:
+  template:
+    spec:
+      containers:
+      - name: run-auth-db-init
+        image: postgres:latest
+        command: ["psql", "-h", "postgres-auth-service", "-U", "myuser", "-d", "authenticate_db", "-f", "/scripts/init.sql"]
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DATASOURCE_PASSWORD
+        volumeMounts:
+        - name: init-script
+          mountPath: /scripts
+      volumes:
+      - name: init-script
+        configMap:
+          name: init-auth-db-script
+      restartPolicy: Never
+  backoffLimit: 4
