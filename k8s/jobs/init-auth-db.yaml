@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-auth-db
+spec:
+  template:
+    spec:
+      containers:
+      - name: init-auth-db
+        image: sleepynhi/authenticate-service:latest
+        command: ["node", "dist/database/seed.js"]
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: NODE_ENV
+        - name: DATASOURCE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DATASOURCE_HOST
+        - name: DATASOURCE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DATASOURCE_PORT
+        - name: DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DATASOURCE_USERNAME
+        - name: DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DATASOURCE_PASSWORD
+        - name: DATASOURCE_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DATASOURCE_DATABASE
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: JWT_SECRET
+      restartPolicy: Never
+  backoffLimit: 4

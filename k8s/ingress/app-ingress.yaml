@@ -1,0 +1,53 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: frontend.192.168.49.2.nip.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+      - path: /api/auth
+        pathType: Prefix
+        backend:
+          service:
+            name: authenticate-service
+            port:
+              number: 8081
+      - path: /api/todos
+        pathType: Prefix
+        backend:
+          service:
+            name: todotask-service
+            port:
+              number: 8082
+      - path: /api/notes
+        pathType: Prefix
+        backend:
+          service:
+            name: todotask-service
+            port:
+              number: 8082
+      - path: /api/notifications
+        pathType: Prefix
+        backend:
+          service:
+            name: notification-service
+            port:
+              number: 8083
+      - path: /api/images
+        pathType: Prefix
+        backend:
+          service:
+            name: image-service
+            port:
+              number: 8084

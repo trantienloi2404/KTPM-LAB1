@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-notification
+spec:
+  serviceName: postgres-notification-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-notification
+  template:
+    metadata:
+      labels:
+        app: postgres-notification
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: notification_db
+        - name: POSTGRES_USER
+          value: myuser
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DATASOURCE_PASSWORD
+        volumeMounts:
+        - name: postgres-notification-storage
+          mountPath: /var/lib/postgresql/data
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-U", "myuser", "-d", "notification_db"]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command: ["pg_isready", "-U", "myuser", "-d", "notification_db"]
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: postgres-notification-storage
+        persistentVolumeClaim:
+          claimName: postgres-notification-pvc

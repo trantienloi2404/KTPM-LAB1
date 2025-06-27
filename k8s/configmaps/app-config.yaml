@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  NODE_ENV: "production"
+  DATASOURCE_HOST: "postgres-auth-service"
+  DATASOURCE_PORT: "5432"
+  DATASOURCE_DATABASE: "authenticate_db"
+  DATASOURCE_USERNAME: "myuser"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-todo-service:5432/todo_db"
+  SPRING_DATASOURCE_USERNAME: "myuser"
+  SPRING_DATA_REDIS_HOST: "redis-service"
+  SERVER_PORT: "8082"
+  SPRING_CACHE_TYPE: "NONE"
+  PORT_NOTIFICATION: "8083"
+  DATABASE_URL_NOTIFICATION: "postgresql://myuser:mypass@postgres-notification-service:5432/notification_db"
+  REDIS_URL: "redis://redis-service:6379"
+  AUTH_SERVICE_URL: "http://authenticate-service:8081"
+  TODO_SERVICE_URL: "http://todotask-service:8082"
+  IMAGE_SERVICE_URL: "http://image-service:8084"
+  NOTIFICATION_SERVICE_URL: "http://notification-service:8083"
+  PORT_IMAGE: "8084"
+  ALLOWED_ORIGINS: "http://frontend-service,http://localhost:3000,http://localhost:8080"
