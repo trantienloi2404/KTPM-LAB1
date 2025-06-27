@@ -74,6 +74,7 @@ const TodoPage: React.FC = () => {
   ) => {
     if (editingNote) {
       await updateNote(editingNote.id!, { ...noteData, id: editingNote.id });
+      console.log("here");
     } else {
       await addNote(noteData, imagesToUpload);
     }
@@ -169,12 +170,15 @@ const TodoPage: React.FC = () => {
             </div>
 
             {showNoteForm && (
-              <NoteForm
-                onSubmit={handleNoteSubmit}
-                initialData={editingNote || undefined}
-                onCancel={() => setShowNoteForm(false)}
-                userId={user.id}
-              />
+              <>
+                {console.log("editingNote:", editingNote)}
+                <NoteForm
+                  onSubmit={handleNoteSubmit}
+                  initialData={editingNote || undefined}
+                  onCancel={() => setShowNoteForm(false)}
+                  userId={user.id}
+                />
+              </>
             )}
 
             {loading ? (
